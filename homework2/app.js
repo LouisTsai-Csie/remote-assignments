@@ -3,7 +3,7 @@ const healthcheck = require('express-healthcheck');
 
 const app = express();
 
-const port = 3000;
+const port = 4000;
 
 const tool = require('./tool');
 
@@ -17,8 +17,6 @@ app.get('/', (req, res)=>{
 
 app.post('/users', (req, res)=>{
     const {name, email, password} = req.query;
-    
-    let checkRequest = tool.checkData(name, email, password);
 
     if(req.headers['content-type']!=='application/json'){
         res.status(400);
@@ -31,11 +29,33 @@ app.post('/users', (req, res)=>{
         return;
     }
 
-    if(!checkRequest){
-        res.status(400);
-        res.send('client error');
-        return;
+    let checkRequest = tool.checkData(name, email, password);
+    
+    switch(checkRequest){
+        case "REQUEST_DATA_TYPE_ERROR":
+            res.status(400);
+            res.send("request data type error");
+            break;
+        case "REQUEST_DATA_NULL_ERROR":
+            res.status(400);
+            res.send("request data null error");
+            break;
+        case "REQUEST_NAME_ERROR":
+            res.status(400);
+            res.send("request name error");
+            break;
+        case "REQUEST_EMAIL_ERROR":
+            res.status(400);
+            res.send("request email error");
+            break;
+        case "REQUEST_PASSWORD_ERROR":
+            res.status(400);
+            res.send("request password error");
+            break;
+        default:
+            break;
     }
+
     sql.userSignUp(name, email, password, req.headers["request-date"])
         .then((result)=>{
             switch(result){

@@ -38,11 +38,16 @@ function checkPasswordFormat(password) {
 
 function checkData(name, email, password) {
     if(typeof(name)!='string'||typeof(email)!='string'||typeof(password)!='string')
-        return false;
+        return "REQUEST_DATA_TYPE_ERROR";
     if(!name.length&&!email.length&&!password.length)
-        return false;
-    
-    return checkName(name) && checkMailFormat(email) && checkPasswordFormat(password);
+        return "REQUEST_DATA_NULL_ERROR";
+    if(!checkName(name))
+        return "REQUEST_NAME_ERROR";
+    if(!checkMailFormat(email))
+        return "REQUEST_EMAIL_ERROR";
+    if(!checkPasswordFormat(password))
+        return "REQUEST_PASSWORD_ERROR";
+    return true;
 }
 
 
