@@ -1,12 +1,13 @@
-
 const express = require('express');
 const healthcheck = require('express-healthcheck');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const app  = express();
 
-app.use(bodyParser.json());
+const app = express();
+
 app.use(cors());
+app.use(bodyParser.json());
+
 const port = 4000;
 
 const tool = require('./tool');
@@ -20,11 +21,8 @@ app.get('/', (req, res)=>{
 }) 
 
 app.post('/users', (req, res)=>{
-    console.log('req.body: ', req.body);
-    console.log('req.query: ', req.query);
+    console.log(req.body);
     const {name, email, password} = req.body;
-    
-    let checkRequest = tool.checkData(name, email, password);
 
     if(req.headers['content-type']!=='application/json'){
         res.status(400);
@@ -37,11 +35,33 @@ app.post('/users', (req, res)=>{
         return;
     }
 
-    if(!checkRequest){
-        res.status(400);
-        res.send('client error');
-        return;
+    let checkRequest = tool.checkData(name, email, password);
+    console.log("type: ", typeof(checkRequest), "data: ", checkRequest);
+    switch(checkRequest){
+        case "REQUEST_DATA_TYPE_ERROR":
+            res.status(400);
+            res.send("request data type error");
+            break;
+        case "REQUEST_DATA_NULL_ERROR":
+            res.status(400);
+            res.send("request data null error");
+            break;
+        case "REQUEST_NAME_ERROR":
+            res.status(400);
+            res.send("request name error");
+            break;
+        case "REQUEST_EMAIL_ERROR":
+            res.status(400);
+            res.send("request email error");
+            break;
+        case "REQUEST_PASSWORD_ERROR":
+            res.status(400);
+            res.send("request password error");
+            break;
+        default:
+            break;
     }
+
     sql.userSignUp(name, email, password, req.headers["request-date"])
         .then((result)=>{
             switch(result){
@@ -89,4 +109,3 @@ app.get('/users', (req, res)=>{
 app.listen(port, ()=>{
     console.log(`Example app listening on port ${port}`);
 });
-
