@@ -1,7 +1,10 @@
 const express = require('express');
 const healthcheck = require('express-healthcheck');
+const bodyParser = require('body-parser');
 
 const app = express();
+
+app.use(bodyParser.json());
 
 const port = 4000;
 
@@ -16,7 +19,8 @@ app.get('/', (req, res)=>{
 }) 
 
 app.post('/users', (req, res)=>{
-    const {name, email, password} = req.query;
+    console.log(req.body);
+    const {name, email, password} = req.body;
 
     if(req.headers['content-type']!=='application/json'){
         res.status(400);
