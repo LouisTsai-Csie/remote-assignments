@@ -1,8 +1,12 @@
+
 const express = require('express');
 const healthcheck = require('express-healthcheck');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const app  = express();
 
-const app = express();
-
+app.use(bodyParser.json());
+app.use(cors());
 const port = 4000;
 
 const tool = require('./tool');
@@ -16,7 +20,9 @@ app.get('/', (req, res)=>{
 }) 
 
 app.post('/users', (req, res)=>{
-    const {name, email, password} = req.query;
+    console.log('req.body: ', req.body);
+    console.log('req.query: ', req.query);
+    const {name, email, password} = req.body;
     
     let checkRequest = tool.checkData(name, email, password);
 
@@ -83,3 +89,4 @@ app.get('/users', (req, res)=>{
 app.listen(port, ()=>{
     console.log(`Example app listening on port ${port}`);
 });
+
