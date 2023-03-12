@@ -15,7 +15,7 @@ const SignUp = () => {
     const [name, setName]  = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [displayText, setDisplayText] = useState('o');
+    const [displayText, setDisplayText] = useState('');
 
     async function UserSignUp() {
         try {
